@@ -2,6 +2,13 @@
 class Site {
     
     private $url;
+    
+    /* Saves all the data */
+    private $data;
+    
+    private $filename;
+    
+    private $rankfilename;
 
     public function __construct($url = '')
     {
@@ -9,6 +16,8 @@ class Site {
             return false;
         
         $this->setUrl($url);
+        
+        $this->loadData();
         
         return $this;
     }
@@ -40,5 +49,83 @@ class Site {
         return $this->url;
     }
     
+    public function getRank()
+    {
+        echo "Does nothing yet";
+        return $this;
+    }
+
+    public function save() 
+    {
+        return file_put_contents($this->getFilename(),json_encode($this->getData()));
+    }
     
+    public function getData()
+    {
+        return $this->data;
+    }
+    
+    public function addData($data = array(), $key = '')
+    {
+        if(is_array($data)) {
+            if($key != '')
+                $data = array($key => $data);
+            
+            $data = array_merge($this->getData(), $data);
+            $this->data = $data;
+        } else {
+            $this->data[$key] = $data;
+        }
+        
+        return $this;
+    }
+    
+    private function loadData()
+    {
+        if(file_exists('data/'.$this->getUrl().".data")) {
+            $this->addData( json_decode(file_get_contents($this->getFilename())), 'general' );
+        }
+        if($this->checkRankFile()) {
+            $this->addData( json_decode(file_get_contents($this->getRankFilename())), 'rank'  );
+        }
+        $this->data = array();
+        return $this;
+    }
+    
+    private function getFilename()
+    {
+        if($this->filename == "") {
+            $this->filename = 'data/' . $this->getUrl() . ".json";
+        }
+        return $this->filename;
+    }
+    
+    private function getRankFilename()
+    {
+        if($this->rankfilename == "") {
+            $this->rankfilename = 'data/' . $this->getUrl() . ".rank.json";
+        }
+        return $this->rankfilename;
+    }
+    
+    public function downloadRank()
+    {
+        // Exit if we already have a rank file! ( To prevent double download )
+        if($this->checkRankFile()) return false;
+        
+        $json = file_get_contents('http://date.jsontest.com/');
+        
+        if(file_put_contents($this->getRankFilename(),$json) !== false){
+            return true;
+        }
+        return false;
+    }
+    
+    public function checkRankFile()
+    {
+        if(file_exists($this->getRankFilename())) 
+            return true;
+        
+        return false;
+    }
 }
