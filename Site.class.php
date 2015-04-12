@@ -8,7 +8,9 @@ class Site {
     
     private $filename;
     
-    private $rankfilename;
+    private $visitsfilename;
+
+    private $smapi;
 
     public function __construct($url = '')
     {
@@ -16,7 +18,9 @@ class Site {
             return false;
         
         $this->setUrl($url);
-        
+
+        $this->smapi = new smapi($this->getUrl());
+
         $this->loadData();
         
         return $this;
@@ -49,7 +53,7 @@ class Site {
         return $this->url;
     }
     
-    public function getRank()
+    public function getvisits()
     {
         echo "Does nothing yet";
         return $this;
@@ -57,11 +61,16 @@ class Site {
 
     public function save() 
     {
-        return file_put_contents($this->getFilename(),json_encode($this->getData()));
+        // return file_put_contents($this->getFilename(),json_encode($this->getData()));
     }
     
-    public function getData()
+    public function getData($key = '')
     {
+        if($key != '') {
+            if(isset($this->data[$key])) {
+                return $this->data[$key];
+            }
+        }
         return $this->data;
     }
     
@@ -82,48 +91,51 @@ class Site {
     
     private function loadData()
     {
-        if(file_exists('data/'.$this->getUrl().".data")) {
-            $this->addData( json_decode(file_get_contents($this->getFilename())), 'general' );
+
+        if($this->checkVisitsFile()) {
+            $this->addData( json_decode(file_get_contents($this->getVisitesFilename())), 'visits'  );
         }
-        if($this->checkRankFile()) {
-            $this->addData( json_decode(file_get_contents($this->getRankFilename())), 'rank'  );
-        }
-        $this->data = array();
         return $this;
     }
     
     private function getFilename()
     {
-        if($this->filename == "") {
-            $this->filename = 'data/' . $this->getUrl() . ".json";
+        if($this->visitsfilename == "") {
+            $this->visitsfilename = 'data/' . $this->getUrl() . ".json";
         }
-        return $this->filename;
+        return $this->visitsfilename;
     }
     
-    private function getRankFilename()
+    private function getVisitesFilename()
     {
-        if($this->rankfilename == "") {
-            $this->rankfilename = 'data/' . $this->getUrl() . ".rank.json";
+        if($this->visitsfilename == "") {
+            $this->visitsfilename = 'data/' . $this->getUrl() . ".visits.json";
         }
-        return $this->rankfilename;
+        return $this->visitsfilename;
     }
     
-    public function downloadRank()
+    public function downloadVisites()
     {
-        // Exit if we already have a rank file! ( To prevent double download )
-        if($this->checkRankFile()) return false;
+        // Exit if we already have a visits file! ( To prevent double download )
+        if($this->checkVisitsFile()) return false;
         
-        $json = file_get_contents('http://date.jsontest.com/');
-        
-        if(file_put_contents($this->getRankFilename(),$json) !== false){
+        $json = file_get_contents($this->smapi->getVisitesURL());
+
+        if($json === false) {
+            echo $this->smapi->getVisitesURL();
+            echo "\n " . $this->url . " failed to download \n";
+            return false;
+        }
+
+        if(file_put_contents($this->getVisitesFilename(),$json) !== false){
             return true;
         }
         return false;
     }
     
-    public function checkRankFile()
+    public function checkVisitsFile()
     {
-        if(file_exists($this->getRankFilename())) 
+        if(file_exists($this->getVisitesFilename())) 
             return true;
         
         return false;
