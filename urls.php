@@ -214,8 +214,8 @@ $urls = array(
 ,"http://www.mesdessous.fr/"
 ,"http://www.cmonpremier.com"
 ,"http://www.chic-ethnique.com"
-,"http://www.c-mod.com"/*
+,"http://www.c-mod.com"
 ,"http://www.littlefashiongallery.com"
 ,"http://www.myprestigium.com/"
-,"http://www.sojeans.com"*/
+,"http://www.sojeans.com"
 );
