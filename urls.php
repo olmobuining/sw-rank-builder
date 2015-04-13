@@ -22,7 +22,7 @@ $urls = array(
 ,"http://www.cyrillus.fr/"
 ,"http://www.damart.com/"
 ,"http://www.devred.com"
-,"http://www.ikks.fr/"/*
+,"http://www.ikks.fr/"
 ,"http://www.chanel.com/"
 ,"http://www.caroll.com/"
 ,"http://www.dpam.fr/"
@@ -214,7 +214,7 @@ $urls = array(
 ,"http://www.mesdessous.fr/"
 ,"http://www.cmonpremier.com"
 ,"http://www.chic-ethnique.com"
-,"http://www.c-mod.com"
+,"http://www.c-mod.com"/*
 ,"http://www.littlefashiongallery.com"
 ,"http://www.myprestigium.com/"
 ,"http://www.sojeans.com"*/

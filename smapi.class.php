@@ -8,7 +8,7 @@ class smapi {
 
 	public function __construct($domain)
 	{
-		$this->urlparams = '?Format=JSON&UserKey='.SELF::APIKEY;
+		$this->urlparams = '?Format=JSON&UserKey=' . self::APIKEY;
 		$this->domain = $domain;
 	}
 
